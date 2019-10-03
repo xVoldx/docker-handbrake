@@ -128,7 +128,9 @@ COPY --from=builder /tmp/HandBrake/build/gtk/src /usr/bin
 # Set environment variables.
 ENV APP_NAME="HandBrake" \
     AUTOMATED_CONVERSION_PRESET="Very Fast 1080p30" \
-    AUTOMATED_CONVERSION_FORMAT="mp4"
+    AUTOMATED_CONVERSION_FORMAT="mp4" \
+    NVIDIA_VISIBLE_DEVICES=all \
+    NVIDIA_DRIVER_CAPABILITIES=all
 
 # Define mountable directories.
 VOLUME ["/config"]
