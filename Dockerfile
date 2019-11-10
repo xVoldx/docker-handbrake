@@ -34,14 +34,11 @@ RUN apt update && \
     libdvdnav-dev libdvdread-dev libgtk-3-dev \
     libjansson-dev liblzma-dev libappindicator-dev\
     libmp3lame-dev libogg-dev libglib2.0-dev ninja-build \
-    libtheora-dev nasm yasm xterm libnuma-dev \
+    libtheora-dev nasm yasm xterm libnuma-dev numactl \
     libpciaccess-dev linux-headers-generic libx264-dev -y
 
 RUN wget http://mirrors.kernel.org/ubuntu/pool/universe/m/meson/meson_0.47.2-1ubuntu2_all.deb
 RUN apt install ./meson_0.47.2-1ubuntu2_all.deb -y
-
-RUN git clone https://git.videolan.org/git/ffmpeg/nv-codec-headers.git
-RUN cd nv-codec-headers && make -j$(nproc) && make install
 
     # Download HandBrake sources.
 RUN echo "Downloading HandBrake sources..." && \
@@ -56,7 +53,7 @@ RUN echo "Downloading HandBrake sources..." && \
     # Compile HandBrake.
     echo "Compiling HandBrake..." && \
     cd HandBrake && \
-    ./configure --prefix=/usr \
+    ./configure --prefix=/usr/local \
                 --debug=$HANDBRAKE_DEBUG_MODE \
                 --disable-gtk-update-checks \
                 --enable-fdk-aac \
@@ -64,7 +61,7 @@ RUN echo "Downloading HandBrake sources..." && \
                 --launch-jobs=$(nproc) \
                 --launch \
                 && \
-    /tmp/run_cmd -i 600 -m "HandBrake still compiling..." make -j$(nproc) --directory=build
+    /tmp/run_cmd -i 600 -m "HandBrake still compiling..." make -j$(nproc) --directory=build install
 
 # Pull base image.
 FROM jlesage/baseimage-gui:ubuntu-18.04
@@ -75,9 +72,8 @@ WORKDIR /tmp
 RUN apt update && \
     DEBIAN_FRONTEND=noninteractive apt install --no-install-recommends \
         # HandBrake dependencies
-        libass9 speex libbluray2 libdvdnav4 libdvdread4 libcairo2 \
-        libgtk-3-0 libgudev-1.0-0 libjansson4 libnotify4 libopus0 \
-        libsamplerate0 libtheora0 libvorbis0a libvorbisenc2 libxml2 \
+        libass9 libcairo2 libgtk-3-0 libgudev-1.0-0 libjansson4 libnotify4  \
+        libtheora0 libvorbis0a libvorbisenc2 speex libopus0 libxml2 numactl \
         xz-utils git libdbus-glib-1-2 lame x264 \
         # For optical drive listing:
         lsscsi \
@@ -125,8 +121,8 @@ RUN \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Copy HandBrake from base build image.
-COPY --from=builder /tmp/HandBrake/build/HandBrakeCLI /usr/bin
-COPY --from=builder /tmp/HandBrake/build/gtk/src /usr/bin
+COPY --from=builder /usr/local /usr
+
 
 # Set environment variables.
 ENV APP_NAME="HandBrake" \
