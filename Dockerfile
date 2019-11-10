@@ -33,7 +33,7 @@ RUN apt update && \
     libbluray-dev intltool libxml2-dev python \
     libdvdnav-dev libdvdread-dev libgtk-3-dev \
     libjansson-dev liblzma-dev libappindicator-dev\
-    libmp3lame-dev libogg-dev libglib2.0-dev  \
+    libmp3lame-dev libogg-dev libglib2.0-dev meson \
     libtheora-dev nasm yasm xterm libnuma-dev \
     libpciaccess-dev linux-headers-generic libx264-dev -y
 
