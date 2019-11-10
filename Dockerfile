@@ -4,7 +4,7 @@
 FROM ubuntu:18.04 AS builder
 
 # Define software versions.
-ARG HANDBRAKE_VERSION=1.2.2
+ARG HANDBRAKE_VERSION=1.3.0
 
 # Define software download URLs.
 ARG HANDBRAKE_URL=https://github.com/HandBrake/HandBrake.git
