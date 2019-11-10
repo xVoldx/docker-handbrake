@@ -22,7 +22,7 @@ RUN apt update && \
     DEBIAN_FRONTEND=noninteractive apt install \
     # build tools.
     curl build-essential autoconf libtool-bin \
-    m4 patch coreutils tar file git diffutils \
+    m4 patch coreutils tar file git wget diffutils \
     # misc libraries
     libpciaccess-dev xz-utils libbz2-dev \
     # media libraries, media codecs, gtk
@@ -30,12 +30,15 @@ RUN apt update && \
     libvorbis-dev gtk+3.0-dev libdbus-glib-1-dev \
     libnotify-dev libgudev-1.0-dev automake cmake \
     debhelper libwebkitgtk-3.0-dev libspeex-dev \
-    libbluray-dev intltool libxml2-dev python \
+    libbluray-dev intltool libxml2-dev python python3 \
     libdvdnav-dev libdvdread-dev libgtk-3-dev \
     libjansson-dev liblzma-dev libappindicator-dev\
-    libmp3lame-dev libogg-dev libglib2.0-dev meson \
+    libmp3lame-dev libogg-dev libglib2.0-dev ninja-build \
     libtheora-dev nasm yasm xterm libnuma-dev \
     libpciaccess-dev linux-headers-generic libx264-dev -y
+
+RUN wget http://mirrors.kernel.org/ubuntu/pool/universe/m/meson/meson_0.47.2-1ubuntu2_all.deb
+RUN apt install ./meson_0.47.2-1ubuntu2_all.deb -y
 
 RUN git clone https://git.videolan.org/git/ffmpeg/nv-codec-headers.git
 RUN cd nv-codec-headers && make -j$(nproc) && make install
