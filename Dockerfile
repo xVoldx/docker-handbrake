@@ -38,7 +38,7 @@ RUN apt update && \
     libpciaccess-dev linux-headers-generic libx264-dev -y
 
 RUN wget http://mirrors.edge.kernel.org/ubuntu/pool/universe/m/meson/meson_0.54.1-2ubuntu1_all.deb
-RUN apt install ./meson_0.47.2-1ubuntu2_all.deb -y
+RUN apt install ./meson_0.54.1-2ubuntu1_all.deb -y
 
     # Download HandBrake sources.
 RUN echo "Downloading HandBrake sources..." && \
