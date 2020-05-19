@@ -57,8 +57,8 @@ RUN echo "Downloading HandBrake sources..." && \
     /tmp/run_cmd -i 600 -m "HandBrake still compiling..." make -j$(nproc) --directory=build install && \
     cd .. && \
     # Strip symbols.
-        strip -s /usr/bin/ghb; \
-        strip -s /usr/bin/HandBrakeCLI;
+        strip -s /usr/local/bin/ghb; \
+        strip -s /usr/local/bin/HandBrakeCLI;
 
 # Pull base image.
 FROM jlesage/baseimage-gui:debian-10
