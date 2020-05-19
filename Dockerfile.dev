@@ -16,21 +16,22 @@ WORKDIR /tmp
 RUN apt update && \
     DEBIAN_FRONTEND=noninteractive apt install \
     # build tools.
-    curl build-essential autoconf libtool-bin \
+    curl build-essential autoconf libtool libtool-bin \
     m4 patch coreutils tar file git wget diffutils \
     # misc libraries
     libpciaccess-dev xz-utils libbz2-dev \
     # media libraries, media codecs, gtk
     libsamplerate-dev libass-dev libopus-dev libvpx-dev \
-    libvorbis-dev gtk+3.0-dev libdbus-glib-1-dev \
+    libvorbis-dev gtk+3.0-dev libdbus-glib-1-dev libfribidi-dev \
     libnotify-dev libgudev-1.0-dev automake cmake \
-    debhelper libspeex-dev \
+    debhelper libspeex-dev libfontconfig1-dev libfreetype6-dev \
     libbluray-dev intltool libxml2-dev python python3 \
     libdvdnav-dev libdvdread-dev libgtk-3-dev meson \
-    libjansson-dev liblzma-dev libappindicator-dev\
+    libjansson-dev liblzma-dev libappindicator-dev zlib1g-dev \
     libmp3lame-dev libogg-dev libglib2.0-dev ninja-build \
     libtheora-dev nasm yasm xterm libnuma-dev numactl \
-    libpciaccess-dev linux-headers-amd64 libx264-dev -y
+    libwebkit2gtk-4.0-dev libgstreamer-plugins-base1.0-dev \
+    libgstreamer1.0-dev libpciaccess-dev linux-headers-amd64 libx264-dev -y
 
 # Download HandBrake sources.
 RUN echo "Downloading HandBrake sources..." && \
@@ -53,7 +54,11 @@ RUN echo "Downloading HandBrake sources..." && \
                 --launch-jobs=$(nproc) \
                 --launch \
                 && \
-    /tmp/run_cmd -i 600 -m "HandBrake still compiling..." make -j$(nproc) --directory=build install
+    /tmp/run_cmd -i 600 -m "HandBrake still compiling..." make -j$(nproc) --directory=build install && \
+    cd .. && \
+    # Strip symbols.
+        strip -s /usr/bin/ghb; \
+        strip -s /usr/bin/HandBrakeCLI;
 
 # Pull base image.
 FROM jlesage/baseimage-gui:debian-10
