@@ -24,13 +24,13 @@ RUN apt update && \
     libsamplerate-dev libass-dev libopus-dev libvpx-dev \
     libvorbis-dev gtk+3.0-dev libdbus-glib-1-dev \
     libnotify-dev libgudev-1.0-dev automake cmake \
-    debhelper libwebkitgtk-3.0-dev libspeex-dev \
+    debhelper libspeex-dev \
     libbluray-dev intltool libxml2-dev python python3 \
     libdvdnav-dev libdvdread-dev libgtk-3-dev meson \
     libjansson-dev liblzma-dev libappindicator-dev\
     libmp3lame-dev libogg-dev libglib2.0-dev ninja-build \
     libtheora-dev nasm yasm xterm libnuma-dev numactl \
-    libpciaccess-dev linux-headers-generic libx264-dev -y
+    libpciaccess-dev linux-headers-amd64 libx264-dev -y
 
 # Download HandBrake sources.
 RUN echo "Downloading HandBrake sources..." && \
