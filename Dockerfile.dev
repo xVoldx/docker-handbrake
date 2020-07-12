@@ -26,15 +26,12 @@ RUN apt update && \
     libnotify-dev libgudev-1.0-dev automake cmake \
     debhelper libspeex-dev libfontconfig1-dev libfreetype6-dev \
     libbluray-dev intltool libxml2-dev python python3 \
-    libdvdnav-dev libdvdread-dev libgtk-3-dev \
+    libdvdnav-dev libdvdread-dev libgtk-3-dev meson \
     libjansson-dev liblzma-dev libappindicator-dev zlib1g-dev \
     libmp3lame-dev libogg-dev libglib2.0-dev ninja-build \
     libtheora-dev nasm yasm xterm libnuma-dev numactl \
     libwebkit2gtk-4.0-dev libgstreamer-plugins-base1.0-dev \
     libgstreamer1.0-dev libpciaccess-dev linux-headers-amd64 libx264-dev -y
-
-RUN wget http://mirrors.edge.kernel.org/ubuntu/pool/universe/m/meson/meson_0.54.3-1ubuntu2_all.deb
-RUN apt install ./meson_0.54.3-1ubuntu2_all.deb -y
 
 # Download HandBrake sources.
 RUN echo "Downloading HandBrake sources..." && \
@@ -43,9 +40,6 @@ RUN echo "Downloading HandBrake sources..." && \
     echo "Downloading helpers..." && \
     curl -# -L -o /tmp/run_cmd https://raw.githubusercontent.com/jlesage/docker-mgmt-tools/master/run_cmd && \
     chmod +x /tmp/run_cmd && \
-    # Download patches.
-    echo "Downloading patches..." && \
-    curl -# -L -o HandBrake/A00-hb-video-preset.patch https://raw.githubusercontent.com/jlesage/docker-handbrake/master/A00-hb-video-preset.patch && \
     # Compile HandBrake.
     echo "Compiling HandBrake..." && \
     cd HandBrake && \
