@@ -1,15 +1,10 @@
 # djaydev/HandBrake:latest
 
 # Pull base build image.
-FROM ubuntu:18.04 AS builder
-
-# Define software versions.
-ARG HANDBRAKE_VERSION=1.3.0
+FROM debian:10 AS builder
 
 # Define software download URLs.
 ARG HANDBRAKE_URL=https://github.com/HandBrake/HandBrake.git
-
-# Other build arguments.
 
 # Set to 'max' to keep debug symbols.
 ARG HANDBRAKE_DEBUG_MODE=none
@@ -18,38 +13,33 @@ ARG HANDBRAKE_DEBUG_MODE=none
 WORKDIR /tmp
 
 # Compile HandBrake, libva and Intel Media SDK.
-RUN apt update && \
+RUN apt update && apt upgrade -y && \
     DEBIAN_FRONTEND=noninteractive apt install \
     # build tools.
-    curl build-essential autoconf libtool-bin \
+    curl build-essential autoconf libtool libtool-bin \
     m4 patch coreutils tar file git wget diffutils \
     # misc libraries
     libpciaccess-dev xz-utils libbz2-dev \
     # media libraries, media codecs, gtk
     libsamplerate-dev libass-dev libopus-dev libvpx-dev \
-    libvorbis-dev gtk+3.0-dev libdbus-glib-1-dev \
+    libvorbis-dev gtk+3.0-dev libdbus-glib-1-dev libfribidi-dev \
     libnotify-dev libgudev-1.0-dev automake cmake \
-    debhelper libwebkitgtk-3.0-dev libspeex-dev \
+    debhelper libspeex-dev libfontconfig1-dev libfreetype6-dev \
     libbluray-dev intltool libxml2-dev python python3 \
-    libdvdnav-dev libdvdread-dev libgtk-3-dev \
-    libjansson-dev liblzma-dev libappindicator-dev\
+    libdvdnav-dev libdvdread-dev libgtk-3-dev meson \
+    libjansson-dev liblzma-dev libappindicator-dev zlib1g-dev \
     libmp3lame-dev libogg-dev libglib2.0-dev ninja-build \
-    libtheora-dev nasm yasm xterm libnuma-dev numactl \
-    libpciaccess-dev linux-headers-generic libx264-dev -y
+    libtheora-dev nasm yasm xterm libnuma-dev numactl libturbojpeg0-dev \
+    libwebkit2gtk-4.0-dev libgstreamer-plugins-base1.0-dev \
+    libgstreamer1.0-dev libpciaccess-dev linux-headers-amd64 libx264-dev -y
 
-RUN wget http://mirrors.edge.kernel.org/ubuntu/pool/universe/m/meson/meson_0.51.2-1_all.deb
-RUN apt install ./meson_0.51.2-1_all.deb -y
-
-    # Download HandBrake sources.
+# Download HandBrake sources.
 RUN echo "Downloading HandBrake sources..." && \
-        git clone ${HANDBRAKE_URL} HandBrake && \
+        git clone --single-branch --branch 1.3.x ${HANDBRAKE_URL} HandBrake && \
     # Download helper.
     echo "Downloading helpers..." && \
     curl -# -L -o /tmp/run_cmd https://raw.githubusercontent.com/jlesage/docker-mgmt-tools/master/run_cmd && \
     chmod +x /tmp/run_cmd && \
-    # Download patches.
-    echo "Downloading patches..." && \
-    curl -# -L -o HandBrake/A00-hb-video-preset.patch https://raw.githubusercontent.com/jlesage/docker-handbrake/master/A00-hb-video-preset.patch && \
     # Compile HandBrake.
     echo "Compiling HandBrake..." && \
     cd HandBrake && \
@@ -61,10 +51,14 @@ RUN echo "Downloading HandBrake sources..." && \
                 --launch-jobs=$(nproc) \
                 --launch \
                 && \
-    /tmp/run_cmd -i 600 -m "HandBrake still compiling..." make -j$(nproc) --directory=build install
+    /tmp/run_cmd -i 600 -m "HandBrake still compiling..." make -j$(nproc) --directory=build install && \
+    cd .. && \
+    # Strip symbols.
+        strip -s /usr/local/bin/ghb; \
+        strip -s /usr/local/bin/HandBrakeCLI;
 
 # Pull base image.
-FROM jlesage/baseimage-gui:ubuntu-18.04
+FROM jlesage/baseimage-gui:debian-10
 
 WORKDIR /tmp
 
@@ -74,7 +68,7 @@ RUN apt update && \
         # HandBrake dependencies
         libass9 libcairo2 libgtk-3-0 libgudev-1.0-0 libjansson4 libnotify4  \
         libtheora0 libvorbis0a libvorbisenc2 speex libopus0 libxml2 numactl \
-        xz-utils git libdbus-glib-1-2 lame x264 \
+        xz-utils git libdbus-glib-1-2 lame x264 gstreamer1.0-plugins-base \
         # For optical drive listing:
         lsscsi \
         # For watchfolder
@@ -122,7 +116,6 @@ RUN \
 
 # Copy HandBrake from base build image.
 COPY --from=builder /usr/local /usr
-
 
 # Set environment variables.
 ENV APP_NAME="HandBrake" \
