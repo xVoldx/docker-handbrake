@@ -29,7 +29,7 @@ RUN apt update && \
     libdvdnav-dev libdvdread-dev libgtk-3-dev meson \
     libjansson-dev liblzma-dev libappindicator-dev zlib1g-dev \
     libmp3lame-dev libogg-dev libglib2.0-dev ninja-build \
-    libtheora-dev nasm yasm xterm libnuma-dev numactl \
+    libtheora-dev nasm yasm xterm libnuma-dev numactl libturbojpeg0-dev \
     libwebkit2gtk-4.0-dev libgstreamer-plugins-base1.0-dev \
     libgstreamer1.0-dev libpciaccess-dev linux-headers-amd64 libx264-dev -y
 
