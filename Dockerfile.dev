@@ -33,12 +33,9 @@ RUN apt update && \
     libwebkit2gtk-4.0-dev libgstreamer-plugins-base1.0-dev \
     libgstreamer1.0-dev libpciaccess-dev linux-headers-amd64 libx264-dev -y
 
-RUN wget http://ftp.br.debian.org/debian/pool/main/g/gettext/gettext_0.19.8.1-10_amd64.deb
-RUN apt install ./gettext_0.19.8.1-10_amd64.deb -y
-
 # Download HandBrake sources.
 RUN echo "Downloading HandBrake sources..." && \
-        git clone ${HANDBRAKE_URL} HandBrake && \
+        git clone --single-branch --branch 1.3.x ${HANDBRAKE_URL} HandBrake && \
     # Download helper.
     echo "Downloading helpers..." && \
     curl -# -L -o /tmp/run_cmd https://raw.githubusercontent.com/jlesage/docker-mgmt-tools/master/run_cmd && \
