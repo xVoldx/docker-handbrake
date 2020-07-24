@@ -22,7 +22,7 @@ Example run
     -v $HOME:/storage:ro \
     -v $HOME/HandBrake/watch:/watch:rw \
     -v $HOME/HandBrake/output:/output:rw \
-    -e NVIDIA_DRIVER_CAPABILITIES=all
+    -e NVIDIA_DRIVER_CAPABILITIES=all \
     djaydev/handbrake
 ```
 
