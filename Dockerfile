@@ -13,8 +13,8 @@ ARG HANDBRAKE_DEBUG_MODE=none
 WORKDIR /tmp
 
 # Compile HandBrake, libva and Intel Media SDK.
-RUN apt update && apt upgrade -y && \
-    DEBIAN_FRONTEND=noninteractive apt install \
+RUN apt-get update && apt-get upgrade -y && \
+    DEBIAN_FRONTEND=noninteractive apt-get install \
     # build tools.
     curl build-essential autoconf libtool libtool-bin \
     m4 patch coreutils tar file git wget diffutils \
@@ -63,8 +63,8 @@ FROM jlesage/baseimage-gui:debian-10
 WORKDIR /tmp
 
 # Install dependencies.
-RUN apt update && \
-    DEBIAN_FRONTEND=noninteractive apt install --no-install-recommends \
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends \
         # HandBrake dependencies
         libass9 libcairo2 libgtk-3-0 libgudev-1.0-0 libjansson4 libnotify4  \
         libtheora0 libvorbis0a libvorbisenc2 speex libopus0 libxml2 numactl \
@@ -81,7 +81,7 @@ RUN apt update && \
         wget -y && \
     # To read encrypted DVDs
     wget http://www.deb-multimedia.org/pool/main/libd/libdvdcss/libdvdcss2_1.4.2-dmo1_amd64.deb && \
-    apt install ./libdvdcss2_1.4.2-dmo1_amd64.deb -y && \
+    apt-get install ./libdvdcss2_1.4.2-dmo1_amd64.deb -y && \
     # install scripts and stuff from upstream Handbrake docker image
     git config --global http.sslVerify false && \
     git clone https://github.com/jlesage/docker-handbrake.git && \
@@ -105,7 +105,7 @@ RUN \
 
 # Generate and install favicons.
 RUN \
-    apt update && \
+    apt-get update && \
     APP_ICON_URL=https://raw.githubusercontent.com/jlesage/docker-templates/master/jlesage/images/handbrake-icon.png && \
     install_app_icon.sh "$APP_ICON_URL" && \
     apt-get autoremove -y && \
@@ -120,7 +120,7 @@ COPY --from=builder /usr/local /usr
 # Set environment variables.
 ENV APP_NAME="HandBrake" \
     AUTOMATED_CONVERSION_PRESET="Very Fast 1080p30" \
-    AUTOMATED_CONVERSION_FORMAT="mp4" \
+    AUTOMATED_CONVERSION_FORMAT="mkv" \
     NVIDIA_VISIBLE_DEVICES=all \
     NVIDIA_DRIVER_CAPABILITIES=all
 
