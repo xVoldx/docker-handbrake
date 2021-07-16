@@ -79,9 +79,6 @@ RUN apt-get update && \
         expect \
         tcl8.6 \
         wget -y && \
-    # To read encrypted DVDs
-    wget http://www.deb-multimedia.org/pool/main/libd/libdvdcss/libdvdcss2_1.4.2-dmo1_amd64.deb && \
-    apt-get install ./libdvdcss2_1.4.2-dmo1_amd64.deb -y && \
     # install scripts and stuff from upstream Handbrake docker image
     git config --global http.sslVerify false && \
     git clone https://github.com/jlesage/docker-handbrake.git && \
